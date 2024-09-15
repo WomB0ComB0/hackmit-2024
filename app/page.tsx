@@ -11,18 +11,17 @@ import { api } from "@/convex/_generated/api";
 import { Code } from "@/components/typography/code";
 import { Link } from "@/components/typography/link";
 import { SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
-import { StickyHeader } from "@/components/layout/sticky-header";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
   return (
     <>
-      <StickyHeader className="px-4 py-2">
+      <nav className="px-4 py-2">
         <div className="flex justify-between items-center">
           Convex + Next.js + Clerk
           <SignInAndSignUpButtons />
         </div>
-      </StickyHeader>
+      </nav>
       <main className="container max-w-2xl flex flex-col gap-8">
         <h1 className="text-4xl font-extrabold my-8 text-center">
           Convex + Next.js + Clerk Auth
@@ -42,7 +41,7 @@ function SignInAndSignUpButtons() {
   return (
     <div className="flex gap-4">
       <Authenticated>
-        <UserButton afterSignOutUrl="#" />
+        <UserButton afterSignOutUrl="/" />
       </Authenticated>
       <Unauthenticated>
         <SignInButton mode="modal">
