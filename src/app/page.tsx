@@ -22,14 +22,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import { useIsomorphicLayout } from 'usehooks-ts'
+import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 export default function LandingPage() {
   const [isLogin, setIsLogin] = useState(true);
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
-  useIsomorphicLayout(() => {
+  useIsomorphicLayoutEffect(() => {
     setMounted(true);
   }, []);
 

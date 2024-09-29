@@ -2,6 +2,7 @@ import pwa from '@ducanh2912/next-pwa';
 import MillionLint from '@million/lint';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
+import  withPlugins from 'next-compose-plugins';
 
 const withPwa = pwa({
   dest: 'public',
@@ -45,6 +46,12 @@ const config = {
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       { protocol: 'http', hostname: 'localhost', port: '3000' },
       { protocol: 'https', hostname: 'encrypted-tbn0.gstatic.com' },
+      {
+        protocol: 'https',
+        hostname: 'hebbkx1anhila5yf.public.blob.vercel-storage.com',
+        port: '', // Leave empty for default ports (80 for http, 443 for https)
+        pathname: '/**', // Allow all paths under this hostname
+      },
     ],
   },
   rewrites() {
@@ -60,7 +67,10 @@ const config = {
       {
         source: '/api/v1/:path*',
         headers: [
-          { key: 'Access-Control-Allow-Credentials', value: 'true' },
+          { 
+            key: 'Access-Control-Allow-Credentials', 
+            value: 'true' 
+          },
           { key: 'Access-Control-Allow-Origin', value: 'https://full-stack-template.vercel.app' },
           {
             key: 'Access-Control-Allow-Methods',
@@ -112,10 +122,11 @@ const withMillion = MillionLint.next({
 })
 
 const finalConfig = withPlugins([
-  [withBundleAnalyzer({ enabled: process.env.ANALYZE })],
+  [withBundleAnalyzer({ enabled: false })],
   [pwa],
   [withMillion],
 ], config)
+
 
 export default withSentryConfig(finalConfig, {
   org: 'womb0comb0',
