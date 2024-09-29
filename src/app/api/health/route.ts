@@ -1,4 +1,7 @@
+import { NextResponse } from 'next/server';
+import superjjson from 'superjson';
+
 export async function GET() {
-  return new Response('OK', { status: 200 });
+  return NextResponse.json({ hello: 'world' });
 }
 
