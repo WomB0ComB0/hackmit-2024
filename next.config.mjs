@@ -8,10 +8,8 @@ const withPwa = pwa({
   dest: 'public',
   disable: false,
   register: true,
-  skipWaiting: true,
   sw: '/sw.js',
   publicExcludes: ['!noprecache/**/*'],
-  buildExcludes: [/middleware-manifest\.json$/]
 });
 
 /**
@@ -116,14 +114,16 @@ const config = {
 
 const withMillion = MillionLint.next({
   rsc: true,
+  production: true,
   filter: {
+    exclude: './src/components/Navigation.tsx',
     include: '**/components/*.{mtsx,mjsx,tsx,jsx}',
   },
 })
 
 const finalConfig = withPlugins([
   [withBundleAnalyzer({ enabled: false })],
-  [pwa],
+  [withPwa],
   [withMillion],
 ], config)
 
