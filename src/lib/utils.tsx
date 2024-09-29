@@ -1,5 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
-import { ForwardRefRenderFunction, forwardRef, PropsWithoutRef, RefAttributes } from "react";
+import { type ForwardRefRenderFunction, forwardRef, type PropsWithoutRef, type RefAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -24,6 +24,7 @@ export function se<
     // @ts-expect-error Too complicated for TypeScript
     <Tag ref={ref} className={cn(...classNames, className)} {...props} />
   ));
-  component.displayName = Tag[0].toUpperCase() + Tag.slice(1);
+  let checkedTag = Tag[0] ?? 'no-tag'
+  component.displayName = checkedTag.toUpperCase() + Tag.slice(1);
   return component;
 }

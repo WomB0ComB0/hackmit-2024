@@ -16,7 +16,6 @@ export const PUT = async (req: NextRequest) => {
     status: 200,
     statusText: 'OK',
   });
-
 }
 
 export const DELETE = async (req: NextRequest) => {
