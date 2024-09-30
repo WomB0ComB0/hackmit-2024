@@ -7,8 +7,8 @@ declare global {
       CLERK_SECRET_KEY: string;
       CONVEX_DEPLOYMENT: string;
       CLERK_JWT_ISSUER_DOMAIN: string;
+      NEXT_PUBLIC_API_URL: strnig;
     }
   }
 }
-
 export {};

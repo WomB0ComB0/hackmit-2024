@@ -1,22 +1,43 @@
 import { NextResponse, NextRequest } from 'next/server';
 import superjson from 'superjson';
-import { z } from 'zod';
 import { schema, Schema } from '@/app/api/v1/'
 
 export const GET = async (req: NextRequest) => {
-  return NextResponse.json({ hello: 'world' });
-}
-
-export const POST = async (req: NextRequest) => {
-  return NextResponse.json({ hello: 'world' });
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
 }
 
 export const PUT = async (req: NextRequest) => {
-  return NextResponse.json({ hello: 'world' });
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
 }
 
 export const DELETE = async (req: NextRequest) => {
-  return NextResponse.json({ hello: 'world' });
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
 }
 
-expoort 
+export const HEAD = async (req: NextRequest) => {
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
+}
+
+export const OPTIONS = async (req: NextRequest) => {
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
+}

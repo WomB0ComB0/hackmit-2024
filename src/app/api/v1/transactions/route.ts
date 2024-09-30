@@ -1,5 +1,35 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import superjson from 'superjson';
-import { z } from 'zod';
+import { schema, type Schema } from '@/app/api/v1/'
 
-export 
+export const GET = async (req: NextRequest) => {
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
+}
+
+export const POST = async (req: NextRequest) => {
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
+}
+
+export const HEAD = async (req: NextRequest) => {
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
+}
+
+export const OPTIONS = async (req: NextRequest) => {
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 200,
+    statusText: 'OK',
+  });
+}
