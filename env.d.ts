@@ -8,6 +8,7 @@ declare global {
       CONVEX_DEPLOYMENT: string;
       CLERK_JWT_ISSUER_DOMAIN: string;
       NEXT_PUBLIC_API_URL: strnig;
+      SENTRY_AUTH_TOKEN: string;
     }
   }
 }

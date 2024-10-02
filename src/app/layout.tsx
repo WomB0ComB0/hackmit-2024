@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-import Navigation from "../components/Navigation";
+import Navigation from "@/components/Navigation";
 import { Providers } from '@/providers';
 import { Scripts } from '@/scripts/Scripts';
 import { constructMetadata, constructViewport } from '@/utils';

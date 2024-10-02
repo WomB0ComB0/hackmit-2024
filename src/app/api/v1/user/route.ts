@@ -4,7 +4,7 @@ import { schema, type Schema } from '@/app/api/v1/'
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-if (typeof API === undefined) {
+if (!(typeof API === 'string')) {
   throw new Error('API is not defined.')
 }
 
@@ -25,7 +25,7 @@ export const POST = async (req: NextRequest) => {
 }
 
 export const HEAD = async (req: NextRequest) => {
-  return NextResponsson(superjson.stringify({ hello: 'world' }), {
+  return NextResponse.json(superjson.stringify({ hello: 'world' }), {
     headers: { 'Content-Type': 'application/json' },
     status: 200,
     statusText: 'OK',
