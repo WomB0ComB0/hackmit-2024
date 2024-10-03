@@ -2,7 +2,6 @@
 
 import { ThemeProvider } from 'next-themes';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import type { ReactNode } from 'react';
 import { Events, ConvexClientProvider } from '.';
 import { QueryProvider } from './QueryProvider';
 
@@ -15,8 +14,9 @@ const Providers: React.FC<
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <ConvexClientProvider>
         <QueryProvider>
-          <Events />
-          {children}
+          <Events>
+            {children}
+          </Events>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>
       </ConvexClientProvider>

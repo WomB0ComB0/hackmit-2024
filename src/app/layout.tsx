@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 
 import Navigation from "@/components/Navigation";
 import { Providers } from '@/providers';
-import { Scripts } from '@/scripts/Scripts';
+import { Scripts } from '@/scripts';
 import { constructMetadata, constructViewport } from '@/utils';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -25,6 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       data-a11y-link-underlines="false"
       data-turbo-loaded
     >
+      <head>
+        <Scripts />
+      </head>
       <body className="flex h-screen overflow-hidden">
         <Providers>
           <Navigation />

@@ -47,12 +47,17 @@ const config = {
       {
         protocol: 'https',
         hostname: 'hebbkx1anhila5yf.public.blob.vercel-storage.com',
-        port: '', // Leave empty for default ports (80 for http, 443 for https)
-        pathname: '/**', // Allow all paths under this hostname
+        port: '',
+        pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+        port: '',
+      }
     ],
   },
-  rewrites() {
+  rewrites: async () => {
     return [
       { source: "/healthz", destination: "/api/health" },
       { source: "/api/healthz", destination: "/api/health" },
@@ -65,9 +70,9 @@ const config = {
       {
         source: '/api/v1/:path*',
         headers: [
-          { 
-            key: 'Access-Control-Allow-Credentials', 
-            value: 'true' 
+          {
+            key: 'Access-Control-Allow-Credentials',
+            value: 'true'
           },
           { key: 'Access-Control-Allow-Origin', value: 'https://full-stack-template.vercel.app' },
           {
@@ -114,7 +119,6 @@ const config = {
 
 const withMillion = MillionLint.next({
   rsc: true,
-  production: true,
   filter: {
     exclude: './src/components/Navigation.tsx',
     include: '**/components/*.{mtsx,mjsx,tsx,jsx}',

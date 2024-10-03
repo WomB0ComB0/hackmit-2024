@@ -5,7 +5,7 @@ export const app: Readonly<{
   description: string;
 }> = {
   name: 'Fraud Guard',
-  url: 'https://fraudguard.tech',
+  url: 'https://www.fraudguard.tech',
   email: 'mike.odnis@mikeodnis.dev',
   description:
     "",

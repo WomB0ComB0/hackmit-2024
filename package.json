@@ -38,6 +38,7 @@
   "dependencies": {
     "@biomejs/biome": "1.9.3",
     "@clerk/clerk-react": "^5.11.0",
+    "@clerk/nextjs": "^5.7.1",
     "@ducanh2912/next-pwa": "^10.2.9",
     "@hookform/resolvers": "^3.9.0",
     "@million/lint": "^1.0.0",
