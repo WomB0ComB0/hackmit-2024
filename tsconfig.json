@@ -37,8 +37,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@testing": ["./test-fixtures.ts"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*","./convex/*"]
     }
   },
   "include": [

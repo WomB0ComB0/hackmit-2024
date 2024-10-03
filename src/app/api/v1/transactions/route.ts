@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import superjson from 'superjson';
 import { schema, type Schema } from '@/app/api/v1/'
-
+import { API } from '../config'
 export const GET = async (req: NextRequest) => {
   return NextResponse.json(superjson.stringify({ hello: 'world' }), {
     headers: { 'Content-Type': 'application/json' },

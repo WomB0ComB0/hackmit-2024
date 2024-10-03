@@ -25,10 +25,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       data-a11y-link-underlines="false"
       data-turbo-loaded
     >
-      <body>
+      <body className="flex h-screen overflow-hidden">
         <Providers>
           <Navigation />
-          {children}
+          <main className="flex-1 overflow-y-auto p-4">
+            {children}
+          </main>
           <SpeedInsights />
           <Analytics />
         </Providers>

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import superjson from 'superjson';
 import { schema, type Schema } from '@/app/api/v1/'
-
-const API = process.env.NEXT_PUBLIC_API_URL;
+import { API } from '../config'
 
 if (!(typeof API === 'string')) {
   throw new Error('API is not defined.')
 }
+
 
 export const GET = async (req: NextRequest) => {
   return NextResponse.json(superjson.stringify({ hello: 'world' }), {
