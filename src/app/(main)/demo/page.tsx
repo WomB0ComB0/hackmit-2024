@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { create } from 'zustand';
 import { api } from '@/app/api/v1/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,17 +23,101 @@ type TransactionResult = {
   fraudProbability: number;
 };
 
+type FormData = {
+  amount: string;
+  productCategory: string;
+  customerLocation: string;
+  accountAgeDays: string;
+  transactionDate: string;
+};
+
+type State = {
+  userId: string | null;
+  formData: FormData;
+  result: TransactionResult | null;
+  error: string | null;
+  isLoading: boolean;
+  isRegistering: boolean;
+  setUserId: (userId: string | null) => void;
+  setFormData: (formData: Partial<FormData>) => void;
+  setResult: (result: TransactionResult | null) => void;
+  setError: (error: string | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  setIsRegistering: (isRegistering: boolean) => void;
+  registerUser: (user: any) => Promise<void>;
+  createTransaction: () => Promise<void>;
+};
+
+const useStore = create<State>((set, get) => ({
+  userId: null,
+  formData: {
+    amount: '',
+    productCategory: '',
+    customerLocation: '',
+    accountAgeDays: '',
+    transactionDate: new Date().toISOString().slice(0, 16),
+  },
+  result: null,
+  error: null,
+  isLoading: false,
+  isRegistering: false,
+  setUserId: (userId) => set({ userId }),
+  setFormData: (formData) => set((state) => ({ formData: { ...state.formData, ...formData } })),
+  setResult: (result) => set({ result }),
+  setError: (error) => set({ error }),
+  setIsLoading: (isLoading) => set({ isLoading }),
+  setIsRegistering: (isRegistering) => set({ isRegistering }),
+  registerUser: async (user) => {
+    const { setUserId, setError, setIsRegistering } = get();
+    setIsRegistering(true);
+    try {
+      const existingUser = await api.getUser(user.id);
+      setUserId(existingUser.id);
+    } catch (error) {
+      try {
+        const newUser = await api.createUser({
+          id: user.id,
+          name: user.fullName || 'Anonymous',
+          email: user.primaryEmailAddress?.emailAddress || 'unknown@example.com',
+        });
+        setUserId(newUser.id);
+      } catch (createError) {
+        setError('Failed to register user. Please try again later or contact support.');
+      }
+    } finally {
+      setIsRegistering(false);
+    }
+  },
+  createTransaction: async () => {
+    const { userId, formData, setIsLoading, setError, setResult } = get();
+    if (!userId) {
+      setError('User not registered. Please try again.');
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    setResult(null);
+    try {
+      const transaction = await api.createTransaction({
+        userId,
+        amount: parseFloat(formData.amount),
+        productCategory: formData.productCategory,
+        customerLocation: formData.customerLocation,
+        accountAgeDays: parseInt(formData.accountAgeDays),
+        transactionDate: new Date(formData.transactionDate).toISOString(),
+      });
+      setResult(transaction as TransactionResult);
+    } catch (error) {
+      setError('Failed to create transaction. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  },
+}));
+
 const productCategories = [
-  'Electronics',
-  'Clothing',
-  'Home & Garden',
-  'Sports & Outdoors',
-  'Books',
-  'Toys & Games',
-  'Health & Beauty',
-  'Automotive',
-  'Jewelry',
-  'Food & Grocery',
+  'Electronics', 'Clothing', 'Home & Garden', 'Sports & Outdoors', 'Books',
+  'Toys & Games', 'Health & Beauty', 'Automotive', 'Jewelry', 'Food & Grocery',
 ];
 
 const locations = [
@@ -50,90 +135,22 @@ const locations = [
 
 export default function DemoPage() {
   const { user, isLoaded: isUserLoaded } = useUser();
-  const [userId, setUserId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    amount: '',
-    productCategory: '',
-    customerLocation: '',
-    accountAgeDays: '',
-    transactionDate: '',
-  });
-  const [result, setResult] = useState<TransactionResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
+  const { formData, result, error, isLoading, isRegistering, setFormData, registerUser, createTransaction } = useStore();
 
   useEffect(() => {
-    const now = new Date();
-    const offset = now.getTimezoneOffset();
-    const localDate = new Date(now.getTime() - (offset * 60 * 1000));
-    setFormData(prev => ({
-      ...prev,
-      transactionDate: localDate.toISOString().slice(0, 16)
-    }));
-  }, []);
-
-  useEffect(() => {
-    async function registerUser() {
-      if (isUserLoaded && user) {
-        setIsRegistering(true);
-        try {
-          const existingUser = await api.getUser(user.id);
-          setUserId(existingUser.id);
-        } catch (error) {
-          console.error('Error getting user:', error);
-          try {
-            const newUser = await api.createUser({
-              id: user.id,
-              name: user.fullName || 'Anonymous',
-              email: user.primaryEmailAddress?.emailAddress || 'unknown@example.com',
-            });
-            setUserId(newUser.id);
-          } catch (createError) {
-            console.error('Error creating user:', createError);
-            setError('Failed to register user. Please try again later or contact support.');
-          }
-        } finally {
-          setIsRegistering(false);
-        }
-      }
+    if (isUserLoaded && user) {
+      registerUser(user);
     }
-
-    registerUser();
-  }, [isUserLoaded, user]);
+  }, [isUserLoaded, user, registerUser]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
+    setFormData({ [id]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId) {
-      setError('User not registered. Please try again.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    setResult(null);
-
-    try {
-      const transaction = await api.createTransaction({
-        userId,
-        amount: parseFloat(formData.amount),
-        productCategory: formData.productCategory,
-        customerLocation: formData.customerLocation,
-        accountAgeDays: parseInt(formData.accountAgeDays),
-        transactionDate: new Date(formData.transactionDate).toISOString(),
-      });
-      setResult(transaction as TransactionResult);
-    } catch (error) {
-      console.error('Error creating transaction:', error);
-      setError('Failed to create transaction. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+    createTransaction();
   };
 
   if (!isUserLoaded || isRegistering) {
@@ -169,7 +186,7 @@ export default function DemoPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="productCategory">Product Category</Label>
-              <Select onValueChange={(value) => setFormData(prev => ({ ...prev, productCategory: value }))} value={formData.productCategory}>
+              <Select onValueChange={(value) => setFormData({ productCategory: value })} value={formData.productCategory}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
@@ -182,7 +199,7 @@ export default function DemoPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="customerLocation">Customer Location</Label>
-              <Select onValueChange={(value) => setFormData(prev => ({ ...prev, customerLocation: value }))} value={formData.customerLocation}>
+              <Select onValueChange={(value) => setFormData({ customerLocation: value })} value={formData.customerLocation}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select location" />
                 </SelectTrigger>

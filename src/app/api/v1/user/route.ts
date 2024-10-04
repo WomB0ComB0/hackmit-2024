@@ -1,7 +1,8 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import superjson from 'superjson';
 import { schema } from '@/app/api/v1/user/schema';
-import { API } from '../config';
+import { API } from '@/app/api/v1/config';
 
 if (!(typeof API === 'string')) {
   throw new Error('API is not defined.');
