@@ -63,6 +63,10 @@ const config = {
       { source: "/api/healthz", destination: "/api/health" },
       { source: "/health", destination: "/api/health" },
       { source: "/ping", destination: "/api/health" },
+      {
+        source: '/api/:path*',
+        destination: 'https://hackmit-2024-server.vercel.app/api/:path*',
+      },
     ]
   },
   async headers() {

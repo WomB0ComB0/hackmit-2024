@@ -1,240 +1,286 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Lock, LogIn, Mail, Shield, User, UserPlus, CheckCircle } from "lucide-react"
+import { Shield, CheckCircle, ArrowRight, BarChart, Lock, Users } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
+import { useAuth, SignIn, SignUp, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { useIsomorphicLayoutEffect } from 'usehooks-ts'
-import { GoogleOneTap } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button"
+import Loader from "@/components/client/Loader"
+
+const features = [
+  {
+    title: "Advanced AI",
+    description: "Cutting-edge fraud detection powered by state-of-the-art artificial intelligence",
+    icon: <BarChart className="h-10 w-10 text-primary mb-2" />,
+  },
+  {
+    title: "Real-time Monitoring",
+    description: "24/7 transaction surveillance to catch fraudulent activities as they happen",
+    icon: <Shield className="h-10 w-10 text-primary mb-2" />,
+  },
+  {
+    title: "Easy Integration",
+    description: "Seamless setup for your systems with minimal disruption to your operations",
+    icon: <Lock className="h-10 w-10 text-primary mb-2" />,
+  },
+  {
+    title: "User-Friendly Dashboard",
+    description: "Intuitive interface for easy monitoring and management of your fraud prevention",
+    icon: <Users className="h-10 w-10 text-primary mb-2" />,
+  },
+]
+
+const testimonials = [
+  {
+    quote: "FraudGuard AI has revolutionized our fraud prevention strategy. It's like having a team of experts working 24/7.",
+    author: "Jane Doe",
+    company: "TechCorp Inc.",
+  },
+  {
+    quote: "The real-time alerts have saved us millions. I can't imagine running our business without FraudGuard AI now.",
+    author: "John Smith",
+    company: "Global Finances Ltd.",
+  },
+]
 
 export default function LandingPage() {
-  const [isLogin, setIsLogin] = useState(true)
   const router = useRouter()
-  const [mounted, setMounted] = useState(false)
+  const { isLoaded, userId, isSignedIn } = useAuth()
 
-  useIsomorphicLayoutEffect(() => {
-    setMounted(true)
-  }, [])
+  useEffect(() => {
+    if (isLoaded && userId) {
+      router.push("/dashboard")
+    }
+  }, [isLoaded, userId, router])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form submitted")
-    router.push("/dashboard")
+  if (!isLoaded) {
+    return <Loader />
   }
 
-  if (!mounted) return null
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-8"
-      >
-        <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Navy%20Blue%20and%20Blue,%20Typographic%20and%20Strong,%20Security%20Brand%20Logo-a4myKTB52Q2oKrM2GqsHZLGADmThzP.png"
-          alt="FraudGuard Logo"
-          width={150}
-          height={150}
-          className="mx-auto mb-4 rounded-full shadow-lg"
-        />
-        <h1 className="text-4xl md:text-6xl font-bold text-primary mb-2 tracking-tight">
-          FraudGuard AI
-        </h1>
-        <p className="text-xl text-muted-foreground font-light">
-          Protecting Your Financial Future with Advanced AI
-        </p>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <Card className="w-[380px] shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center flex items-center justify-center">
-              <Shield className="mr-2 text-primary" /> Secure Access
-            </CardTitle>
-            <CardDescription className="text-center">
-              Enter your credentials to access your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger
-                  value="login"
-                  onClick={() => setIsLogin(true)}
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <LogIn className="mr-2 h-4 w-4" /> Login
-                </TabsTrigger>
-                <TabsTrigger
-                  value="signup"
-                  onClick={() => setIsLogin(false)}
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <UserPlus className="mr-2 h-4 w-4" /> Sign Up
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="login">
-                <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        className="pl-8"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Enter your password"
-                        className="pl-8"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <Button className="w-full" type="submit">
-                    <LogIn className="mr-2 h-4 w-4" /> Login
-                  </Button>
-                </form>
-              </TabsContent>
-              <TabsContent value="signup">
-                <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <div className="relative">
-                      <User className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="name"
-                        placeholder="Enter your name"
-                        className="pl-8"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        className="pl-8"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Create a password"
-                        className="pl-8"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <Button className="w-full" type="submit">
-                    <UserPlus className="mr-2 h-4 w-4" /> Sign Up
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <p className="text-sm text-muted-foreground">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
-              <Button
-                variant="link"
-                className="pl-1"
-                onClick={() => setIsLogin(!isLogin)}
-              >
-                {isLogin ? "Sign Up" : "Login"}
-              </Button>
-            </p>
-          </CardFooter>
-        </Card>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="mt-12 text-center"
-      >
-        <h2 className="text-3xl font-bold mb-6">
-          Why Choose FraudGuard AI?
-        </h2>
-        <div className="flex flex-wrap justify-center gap-6">
-          {[
-            {
-              title: "Advanced AI",
-              description: "Cutting-edge fraud detection",
-              icon: <CheckCircle className="h-6 w-6 text-primary mb-2" />,
-            },
-            {
-              title: "Real-time Monitoring",
-              description: "24/7 transaction surveillance",
-              icon: <CheckCircle className="h-6 w-6 text-primary mb-2" />,
-            },
-            {
-              title: "Easy Integration",
-              description: "Seamless setup for your systems",
-              icon: <CheckCircle className="h-6 w-6 text-primary mb-2" />,
-            },
-          ].map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-              className="bg-card p-6 rounded-lg w-72 shadow-lg hover:shadow-xl transition-shadow duration-200"
-            >
-              {feature.icon}
-              <h3 className="text-xl font-semibold text-primary mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-muted-foreground">{feature.description}</p>
-            </motion.div>
-          ))}
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-primary text-white py-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Navy%20Blue%20and%20Blue,%20Typographic%20and%20Strong,%20Security%20Brand%20Logo-a4myKTB52Q2oKrM2GqsHZLGADmThzP.png"
+              alt="FraudGuard Logo"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+            <span className="text-xl font-bold">FraudGuard AI</span>
+          </div>
+          <nav>
+            <ul className="flex space-x-4 items-center">
+              <li><Link href="#features" className="hover:underline">Features</Link></li>
+              <li><Link href="#testimonials" className="hover:underline">Testimonials</Link></li>
+              <li><Link href="#pricing" className="hover:underline">Pricing</Link></li>
+              {isSignedIn ? (
+                <li><UserButton afterSignOutUrl="/" /></li>
+              ) : (
+                <>
+                  <li>
+                    <SignInButton mode="modal">
+                      <Button variant="ghost" className="text-white hover:bg-primary-foreground">Sign In</Button>
+                    </SignInButton>
+                  </li>
+                  <li>
+                    <SignUpButton mode="modal">
+                      <Button variant="outline" className="bg-white text-primary hover:bg-gray-100">Sign Up</Button>
+                    </SignUpButton>
+                  </li>
+                </>
+              )}
+            </ul>
+          </nav>
         </div>
-      </motion.div>
+      </header>
+
+      <main>
+        <section className="bg-gradient-to-b from-primary to-primary-foreground text-white py-20">
+          <div className="container mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight">
+                Protect Your Financial Future with FraudGuard AI
+              </h1>
+              <p className="text-xl mb-8">
+                Advanced AI-powered fraud detection for businesses of all sizes
+              </p>
+              {isSignedIn ? (
+              <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
+                Get Started <ArrowRight className="ml-2" />
+              </Button>
+              ) : (
+                <SignInButton mode="modal">
+                  <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
+                    Get Started <ArrowRight className="ml-2" />
+                  </Button>
+                </SignInButton>
+              )}
+            </motion.div>
+          </div>
+        </section>
+
+        <section id="features" className="py-20">
+          <div className="container mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">Why Choose FraudGuard AI?</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        {feature.icon}
+                        <span className="ml-2">{feature.title}</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p>{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="testimonials" className="bg-gray-100 py-20">
+          <div className="container mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                >
+                  <Card>
+                    <CardContent className="pt-6">
+                      <p className="text-lg mb-4">"{testimonial.quote}"</p>
+                      <p className="font-semibold">{testimonial.author}</p>
+                      <p className="text-sm text-gray-500">{testimonial.company}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="pricing" className="py-20">
+          <div className="container mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">Simple, Transparent Pricing</h2>
+            <div className="flex justify-center">
+              <Card className="w-full max-w-md">
+                <CardHeader>
+                  <CardTitle className="text-2xl font-bold text-center">Enterprise Plan</CardTitle>
+                  <CardDescription className="text-center">Customized for your business needs</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="text-4xl font-bold mb-4">Contact Us</p>
+                  <ul className="text-left mb-6">
+                    <li className="flex items-center mb-2">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" /> Unlimited transactions
+                    </li>
+                    <li className="flex items-center mb-2">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" /> 24/7 support
+                    </li>
+                    <li className="flex items-center mb-2">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" /> Custom AI model training
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" /> Dedicated account manager
+                    </li>
+                  </ul>
+                  <Button className="w-full">Request a Demo</Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-primary text-white py-20">
+          <div className="container mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-4">Ready to Secure Your Business?</h2>
+            <p className="text-xl mb-8">Join thousands of businesses trusting FraudGuard AI</p>
+            <Card className="w-[380px] mx-auto">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-center flex items-center justify-center text-primary">
+                  <Shield className="mr-2" /> Secure Access
+                </CardTitle>
+                <CardDescription className="text-center">
+                  {isSignedIn ? "Welcome back!" : "Sign in to access your account"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-4">
+                {isSignedIn ? (
+                  <div className="text-center">
+                    <p className="mb-4">You're signed in. Ready to protect your business?</p>
+                    <Button onClick={() => router.push('/dashboard')} className="w-full">
+                      Go to Dashboard
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <SignInButton mode="modal">
+                      <Button className="w-full">Sign In</Button>
+                    </SignInButton>
+                    <SignUpButton mode="modal">
+                      <Button variant="outline" className="w-full">Sign Up</Button>
+                    </SignUpButton>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-gray-800 text-white py-8">
+        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
+          <div className="mb-4 md:mb-0">
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Navy%20Blue%20and%20Blue,%20Typographic%20and%20Strong,%20Security%20Brand%20Logo-a4myKTB52Q2oKrM2GqsHZLGADmThzP.png"
+              alt="FraudGuard Logo"
+              width={40}
+              height={40}
+              className="rounded-full inline-block mr-2"
+            />
+            <span className="text-xl font-bold">FraudGuard AI</span>
+          </div>
+          <nav>
+            <ul className="flex space-x-4">
+              <li><Link href="#" className="hover:underline">Privacy Policy</Link></li>
+              <li><Link href="#" className="hover:underline">Terms of Service</Link></li>
+              <li><Link href="#" className="hover:underline">Contact Us</Link></li>
+            </ul>
+          </nav>
+        </div>
+        <div className="container mx-auto mt-4 text-center text-sm">
+          <p>&copy; 2024 FraudGuard AI. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   )
 }

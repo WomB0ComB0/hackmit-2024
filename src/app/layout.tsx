@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 
-import Navigation from "@/components/Navigation";
 import { Providers } from '@/providers';
 import { Scripts } from '@/scripts';
 import { constructMetadata, constructViewport } from '@/utils';
@@ -28,12 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <Scripts />
       </head>
-      <body className="flex h-screen overflow-hidden">
+      <body className="flex h-screen overflow-y-auto">
         <Providers>
-          <Navigation />
-          <main className="flex-1 overflow-y-auto p-4">
-            {children}
-          </main>
+          {children}
           <SpeedInsights />
           <Analytics />
         </Providers>

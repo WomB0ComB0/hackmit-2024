@@ -1,27 +1,29 @@
 'use client';
 
-import { ThemeProvider } from 'next-themes';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Events, ConvexClientProvider } from '.';
+import { ReactNode } from "react";
+import { ThemeProvider } from "@/providers/theme/ThemeProvider";
+import { ConvexClientProvider } from "@/providers/core/Convex";
+import { Events } from ".";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from './QueryProvider';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-const Providers: React.FC<
-  Readonly<{
-    children: React.ReactNode;
-  }>
-> = ({ children }) => {
+export function Providers({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
       <ConvexClientProvider>
         <QueryProvider>
           <Events>
-            {children}
+            <TooltipProvider>{children}</TooltipProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
           </Events>
-          <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>
       </ConvexClientProvider>
     </ThemeProvider>
   );
-};
-
-export { Providers };
+}
