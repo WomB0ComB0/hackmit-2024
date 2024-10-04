@@ -14,7 +14,7 @@ export default function manifest(): ExtendedManifest {
     name: 'Fruad Guard',
     short_name: 'FG',
     description:
-      "",
+      "Fraud Guard is a tool that helps businesses detect and prevent fraud. It uses machine learning to analyze transactions and identify potential fraud.",
     categories: [
       'finance',
       'software development',
@@ -732,7 +732,7 @@ export default function manifest(): ExtendedManifest {
       },
       {
         name: 'Privacy  Policy',
-        short_name: 'Privacy', 
+        short_name: 'Privacy',
         url: '/legal/privacy',
         description: ".",
         icons: [
