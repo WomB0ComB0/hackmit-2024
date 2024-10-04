@@ -48,7 +48,7 @@ type State = {
   createTransaction: () => Promise<void>;
 };
 
-const useStore = create<State>((set, get) => ({
+const useStore = create<State>((set: any, get: any) => ({
   userId: null,
   formData: {
     amount: '',
@@ -61,13 +61,13 @@ const useStore = create<State>((set, get) => ({
   error: null,
   isLoading: false,
   isRegistering: false,
-  setUserId: (userId) => set({ userId }),
-  setFormData: (formData) => set((state) => ({ formData: { ...state.formData, ...formData } })),
-  setResult: (result) => set({ result }),
-  setError: (error) => set({ error }),
-  setIsLoading: (isLoading) => set({ isLoading }),
-  setIsRegistering: (isRegistering) => set({ isRegistering }),
-  registerUser: async (user) => {
+  setUserId: (userId: string | null) => set({ userId }),
+  setFormData: (formData: Partial<FormData>) => set((state: State) => ({ formData: { ...state.formData, ...formData } })),
+  setResult: (result: TransactionResult | null) => set({ result }),
+  setError: (error: string | null) => set({ error }),
+  setIsLoading: (isLoading: boolean) => set({ isLoading }),
+  setIsRegistering: (isRegistering: boolean) => set({ isRegistering }),
+  registerUser: async (user: any) => {
     const { setUserId, setError, setIsRegistering } = get();
     setIsRegistering(true);
     try {
@@ -98,7 +98,7 @@ const useStore = create<State>((set, get) => ({
     setError(null);
     setResult(null);
     try {
-      const transaction = await api.createTransaction({
+      const transaction = await api.createAndFinalizeTransaction({
         userId,
         amount: parseFloat(formData.amount),
         productCategory: formData.productCategory,
@@ -309,9 +309,9 @@ export default function DemoPage() {
                     <dd>{new Date(result.transactionDate).toLocaleString()}</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="font-semibold">Fraud Probability:</dt>
+                    <dt className="font-semibold">Fraud:</dt>
                     <dd className={result.fraudProbability > 0.5 ? 'text-red-500' : 'text-green-500'}>
-                      {(result.fraudProbability * 100).toFixed(2)}%
+                      {result.fraudProbability > 0.5 ? 'Fraudulent' : 'Not Fraudulent'}
                     </dd>
                   </div>
                 </dl>
